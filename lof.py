@@ -70,7 +70,7 @@ def calc_local_outlier_factor(k, vector, dataset):
 
 
 def calc_lof_boundary(vector, dataset):
-    return 0
+    return 1
 
 
 def detect_outliers(k, dataset):
@@ -87,25 +87,35 @@ def detect_outliers(k, dataset):
         # Theorem 1: LOF(p) <= lof_boundary(p): direct_max_distance(p) / indirect_min_distance(p)
         # But it needs to be implemented after distance calculation caching is implemented
         if LOF > calc_lof_boundary(vector, dataset):
-            outliers.append({"LOF": LOF, "vector": vector, "index": index})
+            outliers.append({"vector": vector, "index": index, "LOF": LOF})
     outliers.sort(key=lambda lof_key: lof_key["LOF"], reverse=True)
     return outliers
 
 
 if __name__ == "__main__":
-    # dataset = (
+    # sample 1
+    # dataset = [
     #     (31, 340, 56, 15),
     #     (26, 376, 80, 3.7),
     #     (26, 380, 72, 5.1),
     #     (25, 368, 75, 3.9),
     #     (25, 370, 68, 5.5)
-    # )
-    dataset = (
+    # ]
+
+    # sample 2
+    dataset = [
         (0, 0, 0),
         (-0.07858112, 0.04371652, 0.08754063),
         (-0.071033, 0.04098192, 0.06599712),
         (-0.068174735, 0.026259795, 0.06360817),
         (-0.062882856, 0.030693293, 0.07797909)
-    )
-    for outlier in detect_outliers(3, dataset):
+    ]
+    
+    # detect all outliers in a dataset
+    for outlier in detect_outliers(k=3, dataset=dataset):
         print(outlier)
+    
+    # check if a specific vector is an outlier for a dataset
+    vector = (1, 1, 1)
+    lof = calc_local_outlier_factor(k=4, vector=vector, dataset=dataset)
+    print('vector=', vector, 'lof=', lof)
